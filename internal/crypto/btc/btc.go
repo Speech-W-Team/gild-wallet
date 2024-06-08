@@ -2,9 +2,10 @@ package btc
 
 import (
 	"crypto/ecdsa"
+	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/sha256"
-	"errors"
+	_ "errors"
 	"math/big"
 
 	"golang.org/x/crypto/ripemd160"
@@ -26,9 +27,9 @@ func GenerateWallet() (string, string, error) {
 }
 
 func generateKeyPair() (*ecdsa.PrivateKey, *ecdsa.PublicKey, error) {
-	privKey, err := ecdsa.GenerateKey(ecdsa.S256(), rand.Reader)
+	privKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
-		return nil, nil,e rr
+		return nil, nil, err
 	}
 
 	pubKey := &privKey.PublicKey
@@ -53,7 +54,7 @@ func generateAddress(pubKey *ecdsa.PublicKey) (string, error) {
 
 	hash256 = sha256.New()
 	hash256.Write(checksum)
-	checksum := hash256.Sum(nil)[:4]
+	checksum = hash256.Sum(nil)[:4]
 
 	fullPayload := append(versionedPayload, checksum...)
 
@@ -70,13 +71,13 @@ func base58Encode(input []byte) string {
 	alphabet := "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 	b58 := make([]byte, 0, len(input)*138/100+1)
 
-	x := new(big.Int).setBytes(input)
+	x := new(big.Int).SetBytes(input)
 	mod := new(big.Int)
 	zero := big.NewInt(0)
 	base := big.NewInt(int64(len(alphabet)))
 
 	for x.Cmp(zero) != 0 {
-		x.DivMo(x, base, mod)
+		x.DivMod(x, base, mod)
 		b58 = append(b58, alphabet[mod.Int64()])
 	}
 
