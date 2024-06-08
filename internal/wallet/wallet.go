@@ -4,6 +4,7 @@ import (
 	"errors"
 	_ "errors"
 	"gild-wallet/internal/crypto/btc"
+	"gild-wallet/internal/crypto/eth"
 )
 
 type CryptoType int
@@ -26,6 +27,8 @@ func NewWallet(cryptoType CryptoType) (*Wallet, error) {
 	switch cryptoType {
 	case BTC:
 		address, privateKey, err = btc.GenerateWallet()
+	case ETH:
+		address, privateKey, err = eth.GenerateWallet()
 	default:
 		return nil, errors.New("unsupported crypto type")
 	}

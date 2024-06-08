@@ -5,11 +5,19 @@ import (
 )
 
 func main() {
-	wallet, err := wallet.NewWallet(wallet.BTC)
+	btc, err := wallet.NewWallet(wallet.BTC)
 
 	if err != nil {
 		panic(err)
 	}
 
-	println(wallet.Address)
+	println(btc.Address)
+
+	eth, err := wallet.NewWallet(wallet.ETH)
+
+	if err != nil {
+		panic(err)
+	}
+
+	println(eth.Address)
 }
