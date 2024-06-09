@@ -2,14 +2,9 @@ package btc
 
 import (
 	"crypto/ecdsa"
-	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/sha256"
 )
-
-func generatePrivateKey() (*ecdsa.PrivateKey, error) {
-	return ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-}
 
 func SignTransaction(message string, privateKey *ecdsa.PrivateKey) ([]byte, error) {
 	hash := sha256.Sum256([]byte(message))
