@@ -2,10 +2,10 @@ package eth
 
 import (
 	"crypto/ecdsa"
-	"crypto/elliptic"
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"github.com/ethereum/go-ethereum/crypto"
 	"math/big"
 
 	"golang.org/x/crypto/sha3"
@@ -17,7 +17,7 @@ func SignTransaction(privateKeyHex string, nonce uint64, toAddress string, value
 		return "", err
 	}
 
-	privKey, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	privKey, _ := ecdsa.GenerateKey(crypto.S256(), rand.Reader)
 	privKey.D = new(big.Int).SetBytes(privateKeyBytes)
 
 	// Создание хэша транзакции
