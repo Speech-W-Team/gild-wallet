@@ -1,6 +1,7 @@
-package crypto
+package cryptography
 
 import (
+	"bytes"
 	"crypto/ecdsa"
 	"crypto/rand"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -45,4 +46,29 @@ func Base58Encode(input []byte) string {
 	}
 
 	return string(b58)
+}
+
+func Base58Decode(input []byte) []byte {
+	alphabet := "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+
+	result := big.NewInt(0)
+	for _, b := range input {
+		charIndex := bytes.IndexByte([]byte(alphabet), b)
+		if charIndex == -1 {
+			panic("Invalid character for Base58 encoding")
+		}
+		result.Mul(result, big.NewInt(58))
+		result.Add(result, big.NewInt(int64(charIndex)))
+	}
+
+	decoded := result.Bytes()
+	// Add leading zeros back in.
+	for i := range input {
+		if i > 0 && input[i] != '1' {
+			break
+		}
+		decoded = append([]byte{0x00}, decoded...)
+	}
+
+	return decoded
 }

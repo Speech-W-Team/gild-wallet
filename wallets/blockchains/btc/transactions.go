@@ -15,5 +15,6 @@ func SignTransaction(message string, privateKey *ecdsa.PrivateKey) ([]byte, erro
 
 	// Преобразование подписи в компактный формат
 	signature := append(r.Bytes(), s.Bytes()...)
+
 	return signature, nil
 }

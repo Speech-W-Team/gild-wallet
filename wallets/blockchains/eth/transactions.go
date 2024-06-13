@@ -11,8 +11,8 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
-func SignTransaction(privateKeyHex string, nonce uint64, toAddress string, value *big.Int, gasLimit uint64, gasPrice *big.Int) (string, error) {
-	privateKeyBytes, err := hex.DecodeString(privateKeyHex[2:])
+func (eth *ETH) SignTransaction(privateKeyHex string, nonce uint64, toAddress string, value *big.Int, gasLimit uint64, gasPrice *big.Int) (string, error) {
+	privateKeyBytes, err := hex.DecodeString(privateKeyHex)
 	if err != nil {
 		return "", err
 	}
