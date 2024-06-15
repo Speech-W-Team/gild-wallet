@@ -8,7 +8,7 @@ import (
 	"log"
 )
 
-func (tron *Tron) RestoreWallet(userPrivateKey []byte, networkType blockchains.NetworkType) (blockchains.Wallet, error) {
+func (tron *TRON) RestoreWallet(userPrivateKey []byte, networkType blockchains.NetworkType) (blockchains.Wallet, error) {
 	privKey, err := crypto.ToECDSA(userPrivateKey)
 	if err != nil {
 		return blockchains.Wallet{}, err
@@ -26,4 +26,12 @@ func (tron *Tron) RestoreWallet(userPrivateKey []byte, networkType blockchains.N
 		return blockchains.Wallet{}, err
 	}
 	return blockchains.Wallet{Address: address, PrivateKey: hex.EncodeToString(privateKey), CryptoType: blockchains.TRON}, nil
+}
+
+func (tron *TRON) RestoreWalletFromString(privateKey string, networkType blockchains.NetworkType) (blockchains.Wallet, error) {
+
+}
+
+func (tron *TRON) RestoreWalletFromMnemonic(mnemonic string, password string, networkType blockchains.NetworkType) (blockchains.Wallet, error) {
+
 }

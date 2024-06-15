@@ -27,3 +27,11 @@ func (eth *ETH) RestoreWallet(userPrivateKey []byte, networkType blockchains.Net
 		CryptoType: blockchains.ETH,
 	}, err
 }
+
+func (eth *ETH) RestoreWalletFromString(privateKey string, networkType blockchains.NetworkType) (blockchains.Wallet, error) {
+
+}
+
+func (eth *ETH) RestoreWalletFromMnemonic(mnemonic string, password string, networkType blockchains.NetworkType) (blockchains.Wallet, error) {
+
+}

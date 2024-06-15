@@ -18,6 +18,10 @@ func (eth *ETH) GenerateAddress(pubKey []byte, networkType blockchains.NetworkTy
 	return address.Hex(), nil
 }
 
+func (eth *ETH) GenerateAddressFromString(pubKey string, networkType blockchains.NetworkType) (string, error) {
+
+}
+
 // Temporarily disabled
 func generateAddress(pubKey *ecdsa.PublicKey) string {
 	pubKeyBytes := append(pubKey.X.Bytes(), pubKey.Y.Bytes()...)

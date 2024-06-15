@@ -27,13 +27,19 @@ type Wallet struct {
 	Address    string
 	PrivateKey string
 	CryptoType CryptoType
+	Derivation string
 }
 
 // Cryptocurrency defines the interface for a cryptocurrency.
 type Cryptocurrency interface {
-	GenerateWallet(networkType NetworkType) (Wallet, error)
-	RestoreWallet(privateKey []byte, networkType NetworkType) (Wallet, error)
+	GenerateWallet(networkType NetworkType) (*Wallet, error)
+
+	RestoreWallet(privateKey []byte, networkType NetworkType) (*Wallet, error)
+	RestoreWalletFromString(privateKey string, networkType NetworkType) (*Wallet, error)
+	RestoreWalletFromMnemonic(mnemonic string, password string, networkType NetworkType) (*Wallet, error)
+
 	GenerateAddress(pubKey []byte, networkType NetworkType) (string, error)
+	GenerateAddressFromString(pubKey string, networkType NetworkType) (string, error)
 }
 
 // Transaction represents a cryptocurrency transaction.

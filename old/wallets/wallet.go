@@ -30,7 +30,7 @@ func RestoreWallet(privateKey []byte, cryptoType blockchains.CryptoType) (*block
 	return &wallet, err
 }
 
-func RestoreWalletViaMnemonicPhrase(mnemonicPhrase string, password string, cryptoType blockchains.CryptoType) (*blockchains.Wallet, error) {
+func RestoreWalletViaMnemonicPhrase(mnemonicPhrase string, password string, cryptoType blockchains.CryptoType, networkType blockchains.NetworkType) ([]blockchains.Wallet, error) {
 	var path []DerivationPathItem
 	switch cryptoType {
 	case blockchains.BTC:
@@ -40,12 +40,12 @@ func RestoreWalletViaMnemonicPhrase(mnemonicPhrase string, password string, cryp
 	case blockchains.TRON:
 		path = []DerivationPathItem{NewDerivationPath(44, true), NewDerivationPath(195, true), NewDerivationPath(0, true), {Hardened: false, Path: 0}, {Hardened: false, Path: 0}}
 	}
-	temp, _, _ := hdWallet(mnemonicPhrase, password, path)
+	temp, _, _ := HdWallet(mnemonicPhrase, password, path)
 	cryptocurrency, err := NewCryptocurrency(cryptoType)
 	if err != nil {
 		return nil, err
 	}
-	wallet, err := cryptocurrency.RestoreWallet(temp.D.Bytes(), blockchains.Mainnet)
+	wallet, err := cryptocurrency.RestoreWalletFromMnemonic(temp.D.Bytes(), blockchains.Mainnet)
 	//address, err := cryptocurrency.GenerateAddress()
 	return &wallet, err
 }
@@ -80,7 +80,7 @@ func NewDerivationPath(path uint32, hardened bool) DerivationPathItem {
 	}
 }
 
-func hdWallet(mnemonic string, password string, paths []DerivationPathItem) (*ecdsa.PrivateKey, *string, error) {
+func HdWallet(mnemonic string, password string, paths []DerivationPathItem) (*ecdsa.PrivateKey, *string, error) {
 	seed := bip39.NewSeed(mnemonic, password)
 	// Generate a wallets master node using the seed.
 	masterKey, err := hdkeychain.NewMaster(seed, &chaincfg.MainNetParams)

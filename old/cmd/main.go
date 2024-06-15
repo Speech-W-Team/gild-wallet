@@ -75,7 +75,7 @@ func restoreWallets() {
 	//if err != nil {
 	//	fmt.Println("Error decoding ETH private key:", err)
 	//}
-	//address, privateKey, err = walletApi.RestoreWallet(privKey, blockchains.ETH)
+	//address, privateKey, err = walletApi.RestoreWallet(privKey, blockchain.ETH)
 	//if err != nil {
 	//	fmt.Println("Error restoring wallet:", err)
 	//}
@@ -91,7 +91,7 @@ func restoreWallets() {
 	//if err != nil {
 	//	fmt.Println("Error decoding TRON private key:", err)
 	//}
-	//address, privateKey, err = walletApi.RestoreWallet(privKey, blockchains.TRON)
+	//address, privateKey, err = walletApi.RestoreWallet(privKey, blockchain.TRON)
 	//if err != nil {
 	//	fmt.Println("Error restoring tron wallet:", err)
 	//}
@@ -110,7 +110,7 @@ func restoreWalletsViaMnemonic() {
 	tronAddress := "TWxWU4brH7GkL1hiyXGjLbbs6YDvah7zmd"
 	mnemonicPhrase := "other budget write video mimic captain cargo anger emerge chalk neck series"
 	walletApi := api.WalletAPI{}
-	//address, err := walletApi.RestorePrivateKeyViaMnemonic(mnemonicPhrase, "", blockchains.BTC)
+	//address, err := walletApi.RestorePrivateKeyViaMnemonic(mnemonicPhrase, "", blockchain.BTC)
 	address, privateKey, err := walletApi.RestorePrivateKeyViaMnemonic(mnemonicPhrase, "", blockchains.BTC)
 	if err != nil {
 		fmt.Println("Error restoring wallet:", err)

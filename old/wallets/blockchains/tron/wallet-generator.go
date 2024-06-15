@@ -6,13 +6,13 @@ import (
 	"gild-wallet/wallets/blockchains"
 )
 
-type Tron struct{}
+type TRON struct{}
 
-func NewTRON() *Tron {
-	return &Tron{}
+func NewTRON() *TRON {
+	return &TRON{}
 }
 
-func (tron *Tron) GenerateWallet(networkType blockchains.NetworkType) (blockchains.Wallet, error) {
+func (tron *TRON) GenerateWallet(networkType blockchains.NetworkType) (blockchains.Wallet, error) {
 	privKey, pubKey, err := gild.GenerateKeyPair()
 
 	if err != nil {

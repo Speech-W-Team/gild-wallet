@@ -7,7 +7,7 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
-func (tron *Tron) GenerateAddress(pubKey []byte, networkType blockchains.NetworkType) (string, error) {
+func (tron *TRON) GenerateAddress(pubKey []byte, networkType blockchains.NetworkType) (string, error) {
 	hash3 := sha3.NewLegacyKeccak256()
 	hash3.Write(pubKey)
 	hashed256PubKey := hash3.Sum(nil)
