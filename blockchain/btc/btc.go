@@ -28,10 +28,10 @@ func (manager *BitcoinWalletManager) GenerateWallet(config core.BIPConfig) (*cor
 	return wallet, mnemonic, err
 }
 
-func (manager *BitcoinWalletManager) RestoreWallet(privateKey []byte, _ core.BIPConfig) (*core.Wallet, error) {
+func (manager *BitcoinWalletManager) RestoreWallet(privateKey []byte, config core.BIPConfig) (*core.Wallet, error) {
 	_, pubKey := btcec.PrivKeyFromBytes(btcec.S256(), privateKey)
 
-	address, err := manager.GenerateAddress(pubKey.SerializeCompressed(), core.BIP84)
+	address, err := manager.GenerateAddress(pubKey.SerializeCompressed(), config)
 
 	if err != nil {
 		return nil, err

@@ -1,9 +1,5 @@
 package core
 
-import (
-	"github.com/btcsuite/btcutil/hdkeychain"
-)
-
 type BIPConfig int
 
 const (
@@ -62,40 +58,4 @@ type Wallet struct {
 	Address    string
 	PrivateKey string
 	Derivation string
-}
-
-type WalletBuilder struct {
-	NetworkType
-	MasterKey *hdkeychain.ExtendedKey
-	Mnemonic  string
-	Password  string
-}
-
-func NewWalletBuilder(mnemonic string, password string, networkType NetworkType) *WalletBuilder {
-	seed := SeedFromMnemonic(mnemonic, password)
-	masterKey, err := MasterKeyFromSeed(seed, networkType)
-	if err != nil {
-		return nil
-	}
-	return &WalletBuilder{
-		NetworkType: networkType,
-		MasterKey:   masterKey,
-		Mnemonic:    mnemonic,
-		Password:    password,
-	}
-}
-
-func (builder *WalletBuilder) BuildWalletForDerivationPath(walletManager WalletManager, path DerivationPathItem) (*Wallet, error) {
-	walletKey, err := HDWallet(builder.MasterKey, path)
-	if err != nil {
-		return nil, err
-	}
-
-	ecdsaKey, err := walletKey.ECPrivKey()
-	if err != nil {
-		return nil, err
-	}
-
-	privateKey := ecdsaKey.ToECDSA().D.Bytes()
-	return walletManager.RestoreWallet(privateKey, BIP84)
 }
