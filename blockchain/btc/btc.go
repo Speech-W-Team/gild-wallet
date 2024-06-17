@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"gild-wallet/core"
-	"github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/btcsuite/btcutil/base58"
 	"github.com/tyler-smith/go-bip39"
 	"golang.org/x/crypto/ripemd160"
@@ -29,7 +29,7 @@ func (manager *BitcoinWalletManager) GenerateWallet(config core.BIPConfig) (*cor
 }
 
 func (manager *BitcoinWalletManager) RestoreWallet(privateKey []byte, config core.BIPConfig) (*core.Wallet, error) {
-	_, pubKey := btcec.PrivKeyFromBytes(btcec.S256(), privateKey)
+	_, pubKey := btcec.PrivKeyFromBytes(privateKey)
 
 	address, err := manager.GenerateAddress(pubKey.SerializeCompressed(), config)
 
@@ -80,7 +80,7 @@ func (manager *BitcoinWalletManager) RestoreWalletFromMnemonic(mnemonic string, 
 	if err != nil {
 		return nil, err
 	}
-	privKey := hex.EncodeToString(privateKeyEcdsa.D.Bytes())
+	privKey := hex.EncodeToString(privateKeyEcdsa.ToECDSA().D.Bytes())
 
 	return &core.Wallet{
 		Address:    address,

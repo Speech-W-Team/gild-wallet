@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"gild-wallet/core"
-	"github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/btcsuite/btcutil/base58"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/tyler-smith/go-bip39"
@@ -29,7 +29,7 @@ func (manager *TronWalletManager) GenerateWallet(config core.BIPConfig) (*core.W
 }
 
 func (manager *TronWalletManager) RestoreWallet(privateKey []byte, config core.BIPConfig) (*core.Wallet, error) {
-	_, pubKey := btcec.PrivKeyFromBytes(btcec.S256(), privateKey)
+	_, pubKey := btcec.PrivKeyFromBytes(privateKey)
 
 	address, err := manager.GenerateAddress(pubKey.SerializeCompressed(), config)
 
@@ -78,7 +78,7 @@ func (manager *TronWalletManager) RestoreWalletFromMnemonic(mnemonic string, pas
 	if err != nil {
 		return nil, err
 	}
-	privKey := hex.EncodeToString(privateKeyEcdsa.D.Bytes())
+	privKey := hex.EncodeToString(privateKeyEcdsa.ToECDSA().D.Bytes())
 
 	return &core.Wallet{
 		Address:    address,

@@ -2,8 +2,8 @@ package core
 
 import (
 	"errors"
+	"github.com/btcsuite/btcd/btcutil/hdkeychain"
 	"github.com/btcsuite/btcd/chaincfg"
-	"github.com/btcsuite/btcutil/hdkeychain"
 	"github.com/tyler-smith/go-bip39"
 )
 
@@ -29,9 +29,9 @@ func HDWallet(masterKey *hdkeychain.ExtendedKey, path DerivationPathItem) (*hdke
 	var derivationPath = &path
 
 	if path.Hardened {
-		derivationKey, err = masterKey.Child(hdkeychain.HardenedKeyStart + derivationPath.Path)
+		derivationKey, err = masterKey.Derive(hdkeychain.HardenedKeyStart + derivationPath.Path)
 	} else {
-		derivationKey, err = masterKey.Child(path.Path)
+		derivationKey, err = masterKey.Derive(path.Path)
 	}
 	derivationPath = path.Child
 	if err != nil {
@@ -41,9 +41,9 @@ func HDWallet(masterKey *hdkeychain.ExtendedKey, path DerivationPathItem) (*hdke
 	for derivationPath != nil {
 		if derivationKey != nil {
 			if derivationPath.Hardened {
-				derivationKey, err = derivationKey.Child(hdkeychain.HardenedKeyStart + derivationPath.Path)
+				derivationKey, err = derivationKey.Derive(hdkeychain.HardenedKeyStart + derivationPath.Path)
 			} else {
-				derivationKey, err = derivationKey.Child(derivationPath.Path)
+				derivationKey, err = derivationKey.Derive(derivationPath.Path)
 			}
 		}
 		derivationPath = derivationPath.Child
