@@ -43,7 +43,7 @@ func GenerateWalletWithPrivateKey(blockchain string, privateKey string, network 
 }
 
 //export GenerateWallet
-func GenerateWallet(blockchain string, mnemonic string, password string, network string, bipType int) (*core.Wallet, string, error) {
+func GenerateWallet(blockchain string, network string, bipType int) (*core.Wallet, string, error) {
 	networkType := core.NetworkType(network)
 
 	config, err := getBIPConfig(bipType)
