@@ -32,9 +32,11 @@ var pathBip44 = core.DerivationPathItem{
 	},
 }
 
-type TronWalletManager struct{}
+type TronWalletManager struct {
+	core.NetworkType
+}
 
-func (manager *TronWalletManager) GenerateWallet() (*core.Wallet, string, error) {
+func (manager *TronWalletManager) GenerateWallet(config core.BIPConfig) (*core.Wallet, string, error) {
 	entropy, err := bip39.NewEntropy(128)
 	if err != nil {
 		return nil, "", err
@@ -44,14 +46,14 @@ func (manager *TronWalletManager) GenerateWallet() (*core.Wallet, string, error)
 		return nil, "", err
 	}
 
-	wallet, err := manager.RestoreWalletFromMnemonic(mnemonic, "")
+	wallet, err := manager.RestoreWalletFromMnemonic(mnemonic, "", config)
 	return wallet, mnemonic, err
 }
 
-func (manager *TronWalletManager) RestoreWallet(privateKey []byte) (*core.Wallet, error) {
+func (manager *TronWalletManager) RestoreWallet(privateKey []byte, config core.BIPConfig) (*core.Wallet, error) {
 	_, pubKey := btcec.PrivKeyFromBytes(btcec.S256(), privateKey)
 
-	address, err := manager.GenerateAddress(pubKey.SerializeCompressed())
+	address, err := manager.GenerateAddress(pubKey.SerializeCompressed(), config)
 
 	if err != nil {
 		return nil, err
@@ -64,22 +66,22 @@ func (manager *TronWalletManager) RestoreWallet(privateKey []byte) (*core.Wallet
 	}, nil
 }
 
-func (manager *TronWalletManager) RestoreWalletFromString(privateKey string) (*core.Wallet, error) {
+func (manager *TronWalletManager) RestoreWalletFromString(privateKey string, config core.BIPConfig) (*core.Wallet, error) {
 	privKey, err := hex.DecodeString(privateKey)
 	if err != nil {
 		return nil, err
 	}
-	return manager.RestoreWallet(privKey)
+	return manager.RestoreWallet(privKey, config)
 }
 
-func (manager *TronWalletManager) RestoreWalletFromMnemonic(mnemonic string, password string) (*core.Wallet, error) {
+func (manager *TronWalletManager) RestoreWalletFromMnemonic(mnemonic string, password string, config core.BIPConfig) (*core.Wallet, error) {
 	seed := core.SeedFromMnemonic(mnemonic, password)
-	masterKey, err := core.MasterKeyFromSeed(seed)
+	masterKey, err := core.MasterKeyFromSeed(seed, manager.NetworkType)
 	if err != nil {
 		return nil, err
 	}
 
-	privateKey, err := core.HDWallet(masterKey, pathBip44)
+	privateKey, err := core.HDWallet(masterKey, core.PathBip(44, 195, &core.WalletZeroPath))
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +96,7 @@ func (manager *TronWalletManager) RestoreWalletFromMnemonic(mnemonic string, pas
 		return nil, err
 	}
 
-	address, err := manager.GenerateAddress(publicKey.SerializeCompressed())
+	address, err := manager.GenerateAddress(publicKey.SerializeCompressed(), config)
 	if err != nil {
 		return nil, err
 	}
@@ -107,15 +109,15 @@ func (manager *TronWalletManager) RestoreWalletFromMnemonic(mnemonic string, pas
 	}, nil
 }
 
-func (manager *TronWalletManager) GenerateAddressFromString(pubKey string) (string, error) {
+func (manager *TronWalletManager) GenerateAddressFromString(pubKey string, config core.BIPConfig) (string, error) {
 	publicKey, err := hex.DecodeString(pubKey)
 	if err != nil {
 		return "", err
 	}
-	return manager.GenerateAddress(publicKey)
+	return manager.GenerateAddress(publicKey, config)
 }
 
-func (manager *TronWalletManager) GenerateAddress(pubKey []byte) (string, error) {
+func (manager *TronWalletManager) GenerateAddress(pubKey []byte, _ core.BIPConfig) (string, error) {
 	publicKeyEcdsa, err := crypto.DecompressPubkey(pubKey)
 	if err != nil {
 		return "", err

@@ -4,15 +4,52 @@ import (
 	"github.com/btcsuite/btcutil/hdkeychain"
 )
 
+type BIPConfig int
+
+const (
+	BIP44 BIPConfig = iota
+	BIP49 BIPConfig = iota
+	BIP84 BIPConfig = iota
+)
+
+type NetworkType string
+
+const (
+	Mainnet NetworkType = "mainnet"
+	Testnet NetworkType = "testnet"
+)
+
 type WalletManager interface {
-	GenerateWallet() (*Wallet, string, error)
+	GenerateWallet(config BIPConfig) (*Wallet, string, error)
 
-	RestoreWallet(privateKey []byte) (*Wallet, error)
-	RestoreWalletFromString(privateKey string) (*Wallet, error)
-	RestoreWalletFromMnemonic(mnemonic string, password string) (*Wallet, error)
+	RestoreWallet(privateKey []byte, config BIPConfig) (*Wallet, error)
+	RestoreWalletFromString(privateKey string, config BIPConfig) (*Wallet, error)
+	RestoreWalletFromMnemonic(mnemonic string, password string, config BIPConfig) (*Wallet, error)
 
-	GenerateAddress(pubKey []byte) (string, error)
-	GenerateAddressFromString(pubKey string) (string, error)
+	GenerateAddress(pubKey []byte, config BIPConfig) (string, error)
+	GenerateAddressFromString(pubKey string, config BIPConfig) (string, error)
+}
+
+var WalletZeroPath = DerivationPathItem{}
+
+func PathBip(rootPath uint32, coinPath uint32, walletPath *DerivationPathItem) DerivationPathItem {
+	return DerivationPathItem{
+		Path:     rootPath,
+		Hardened: true,
+		Child: &DerivationPathItem{
+			Path:     coinPath,
+			Hardened: true,
+			Child: &DerivationPathItem{
+				Path:     0,
+				Hardened: true,
+				Child: &DerivationPathItem{
+					Path:     0,
+					Hardened: false,
+					Child:    walletPath,
+				},
+			},
+		},
+	}
 }
 
 type DerivationPathItem struct {
@@ -28,21 +65,23 @@ type Wallet struct {
 }
 
 type WalletBuilder struct {
+	NetworkType
 	MasterKey *hdkeychain.ExtendedKey
 	Mnemonic  string
 	Password  string
 }
 
-func NewWalletBuilder(mnemonic string, password string) *WalletBuilder {
+func NewWalletBuilder(mnemonic string, password string, networkType NetworkType) *WalletBuilder {
 	seed := SeedFromMnemonic(mnemonic, password)
-	masterKey, err := MasterKeyFromSeed(seed)
+	masterKey, err := MasterKeyFromSeed(seed, networkType)
 	if err != nil {
 		return nil
 	}
 	return &WalletBuilder{
-		MasterKey: masterKey,
-		Mnemonic:  mnemonic,
-		Password:  password,
+		NetworkType: networkType,
+		MasterKey:   masterKey,
+		Mnemonic:    mnemonic,
+		Password:    password,
 	}
 }
 
@@ -58,6 +97,5 @@ func (builder *WalletBuilder) BuildWalletForDerivationPath(walletManager WalletM
 	}
 
 	privateKey := ecdsaKey.ToECDSA().D.Bytes()
-
-	return walletManager.RestoreWallet(privateKey)
+	return walletManager.RestoreWallet(privateKey, BIP84)
 }

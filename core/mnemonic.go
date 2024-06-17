@@ -11,8 +11,16 @@ func SeedFromMnemonic(mnemonic string, password string) []byte {
 	return bip39.NewSeed(mnemonic, password)
 }
 
-func MasterKeyFromSeed(seed []byte) (*hdkeychain.ExtendedKey, error) {
-	return hdkeychain.NewMaster(seed, &chaincfg.MainNetParams)
+func MasterKeyFromSeed(seed []byte, networkType NetworkType) (*hdkeychain.ExtendedKey, error) {
+	var params *chaincfg.Params
+	switch networkType {
+	case Mainnet:
+		params = &chaincfg.MainNetParams
+	case Testnet:
+		params = &chaincfg.TestNet3Params
+	}
+
+	return hdkeychain.NewMaster(seed, params)
 }
 
 func HDWallet(masterKey *hdkeychain.ExtendedKey, path DerivationPathItem) (*hdkeychain.ExtendedKey, error) {
