@@ -50,7 +50,7 @@ func TestTronWalletManager_RestoreWallet(t *testing.T) {
 	if masterKey.String() != masterKeyBIP44Expected {
 		t.Fatalf("masterKey != %s, got %s", masterKeyBIP44Expected, masterKey)
 	}
-	derivatedPrivateKey, err := core.HDWallet(masterKey, pathBip44)
+	derivatedPrivateKey, err := core.HDWallet(masterKey, core.PathBip(core.BIP44, 195, &core.WalletZeroPath))
 	if err != nil {
 		t.Fatal(err)
 	}

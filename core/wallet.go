@@ -1,11 +1,11 @@
 package core
 
-type BIPConfig int
+type BIPConfig uint32
 
 const (
-	BIP44 BIPConfig = iota
-	BIP49 BIPConfig = iota
-	BIP84 BIPConfig = iota
+	BIP44 BIPConfig = 44
+	BIP49 BIPConfig = 49
+	BIP84 BIPConfig = 84
 )
 
 type NetworkType string
@@ -28,9 +28,9 @@ type WalletManager interface {
 
 var WalletZeroPath = DerivationPathItem{}
 
-func PathBip(rootPath uint32, coinPath uint32, walletPath *DerivationPathItem) DerivationPathItem {
+func PathBip(rootPath BIPConfig, coinPath uint32, walletPath *DerivationPathItem) DerivationPathItem {
 	return DerivationPathItem{
-		Path:     rootPath,
+		Path:     uint32(rootPath),
 		Hardened: true,
 		Child: &DerivationPathItem{
 			Path:     coinPath,

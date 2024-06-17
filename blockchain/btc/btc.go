@@ -59,16 +59,7 @@ func (manager *BitcoinWalletManager) RestoreWalletFromMnemonic(mnemonic string, 
 		return nil, err
 	}
 
-	var path core.DerivationPathItem
-
-	switch config {
-	case core.BIP44:
-		path = core.PathBip(44, 0, &core.WalletZeroPath)
-	case core.BIP49:
-		path = core.PathBip(49, 0, &core.WalletZeroPath)
-	case core.BIP84:
-		path = core.PathBip(84, 0, &core.WalletZeroPath)
-	}
+	var path = core.PathBip(config, 0, &core.WalletZeroPath)
 
 	privateKey, err := core.HDWallet(masterKey, path)
 	if err != nil {

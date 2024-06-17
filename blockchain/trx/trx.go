@@ -10,28 +10,6 @@ import (
 	"github.com/tyler-smith/go-bip39"
 )
 
-var pathBip44 = core.DerivationPathItem{
-	Path:     44,
-	Hardened: true,
-	Child: &core.DerivationPathItem{
-		Path:     195,
-		Hardened: true,
-		Child: &core.DerivationPathItem{
-			Path:     0,
-			Hardened: true,
-			Child: &core.DerivationPathItem{
-				Path:     0,
-				Hardened: false,
-				Child: &core.DerivationPathItem{
-					Path:     0,
-					Hardened: false,
-					Child:    nil,
-				},
-			},
-		},
-	},
-}
-
 type TronWalletManager struct {
 	core.NetworkType
 }
@@ -81,7 +59,7 @@ func (manager *TronWalletManager) RestoreWalletFromMnemonic(mnemonic string, pas
 		return nil, err
 	}
 
-	privateKey, err := core.HDWallet(masterKey, core.PathBip(44, 195, &core.WalletZeroPath))
+	privateKey, err := core.HDWallet(masterKey, core.PathBip(core.BIP44, 195, &core.WalletZeroPath))
 	if err != nil {
 		return nil, err
 	}

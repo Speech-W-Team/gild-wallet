@@ -9,69 +9,39 @@ import (
 )
 
 //export GenerateWalletWithMnemonic
-func GenerateWalletWithMnemonic(blockchain string, mnemonic string, password string, network string, bipType int) (*core.Wallet, error) {
+func GenerateWalletWithMnemonic(blockchain string, mnemonic string, password string, network string, bipType uint32) (*core.Wallet, error) {
 	networkType := core.NetworkType(network)
-
-	config, err := getBIPConfig(bipType)
-	if err != nil {
-		return nil, err
-	}
 
 	walletManager, err := getWalletManager(blockchain, networkType)
 	if err != nil {
 		return nil, err
 	}
 
-	return walletManager.RestoreWalletFromMnemonic(mnemonic, password, config)
+	return walletManager.RestoreWalletFromMnemonic(mnemonic, password, core.BIPConfig(bipType))
 }
 
 //export GenerateWalletWithPrivateKey
-func GenerateWalletWithPrivateKey(blockchain string, privateKey string, network string, bipType int) (*core.Wallet, error) {
+func GenerateWalletWithPrivateKey(blockchain string, privateKey string, network string, bipType uint32) (*core.Wallet, error) {
 	networkType := core.NetworkType(network)
-
-	config, err := getBIPConfig(bipType)
-	if err != nil {
-		return nil, err
-	}
 
 	walletManager, err := getWalletManager(blockchain, networkType)
 	if err != nil {
 		return nil, err
 	}
 
-	return walletManager.RestoreWalletFromString(privateKey, config)
+	return walletManager.RestoreWalletFromString(privateKey, core.BIPConfig(bipType))
 }
 
 //export GenerateWallet
-func GenerateWallet(blockchain string, network string, bipType int) (*core.Wallet, string, error) {
+func GenerateWallet(blockchain string, network string, bipType uint32) (*core.Wallet, string, error) {
 	networkType := core.NetworkType(network)
-
-	config, err := getBIPConfig(bipType)
-	if err != nil {
-		return nil, "", err
-	}
 
 	walletManager, err := getWalletManager(blockchain, networkType)
 	if err != nil {
 		return nil, "", err
 	}
 
-	return walletManager.GenerateWallet(config)
-}
-
-func getBIPConfig(bipType int) (core.BIPConfig, error) {
-	var config core.BIPConfig
-	switch bipType {
-	case 44:
-		config = core.BIP44
-	case 49:
-		config = core.BIP49
-	case 84:
-		config = core.BIP84
-	default:
-		return 0, fmt.Errorf("invalid BIP type")
-	}
-	return config, nil
+	return walletManager.GenerateWallet(core.BIPConfig(bipType))
 }
 
 func getWalletManager(blockchain string, networkType core.NetworkType) (core.WalletManager, error) {

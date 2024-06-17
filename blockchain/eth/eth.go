@@ -62,7 +62,7 @@ func (manager *EthereumWalletManager) RestoreWalletFromMnemonic(mnemonic string,
 	if err != nil {
 		return nil, err
 	}
-	privateKey, err := core.HDWallet(masterKey, core.PathBip(44, 60, &core.WalletZeroPath))
+	privateKey, err := core.HDWallet(masterKey, core.PathBip(core.BIP44, 60, &core.WalletZeroPath))
 	if err != nil {
 		return nil, err
 	}
